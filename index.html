@@ -21,6 +21,17 @@
     <p>Esta es una notificación simulada con el logo de Tinder.</p>
 
     <script>
+        // Registrar el Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then((registration) => {
+                    console.log('Service Worker registrado con éxito:', registration);
+                })
+                .catch((error) => {
+                    console.log('Error al registrar el Service Worker:', error);
+                });
+        }
+
         // Solicitar permiso para mostrar notificaciones
         if (Notification.permission !== "granted") {
             Notification.requestPermission();
@@ -29,9 +40,12 @@
         // Mostrar notificación al cargar la página
         window.onload = function() {
             if (Notification.permission === "granted") {
-                new Notification("Entraste a mi aplicación", {
-                    icon: "tinder-logo.png",
-                    body: "¡Bienvenido!"
+                navigator.serviceWorker.ready.then((registration) => {
+                    registration.showNotification('Entraste a mi aplicación', {
+                        body: '¡Bienvenido!',
+                        icon: 'tinder-logo.png',
+                        badge: 'tinder-logo.png',
+                    });
                 });
             }
         };
